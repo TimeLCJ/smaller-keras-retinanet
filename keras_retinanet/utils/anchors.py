@@ -234,7 +234,7 @@ def compute_overlap(a, b):
     Parameters
     ----------
     a: (N, 4) ndarray of float
-    b: (K, 4) ndarray of float
+    b: (K, 5) ndarray of float
     Returns
     -------
     overlaps: (N, K) ndarray of overlap between boxes and query_boxes

@@ -17,8 +17,12 @@ limitations under the License.
 import keras
 import keras_resnet
 import keras_resnet.models
+from keras.utils import get_file
 from . import retinanet
 from . import Backbone
+
+# 导入自己定义的resnet50
+from . import resnet50
 
 
 class ResNetBackbone(Backbone):
@@ -47,7 +51,7 @@ class ResNetBackbone(Backbone):
         elif depth == 152:
             checksum = '6ee11ef2b135592f8031058820bb9e71'
 
-        return keras.applications.imagenet_utils.get_file(
+        return get_file(
             filename,
             resource,
             cache_subdir='models',
@@ -71,7 +75,7 @@ def resnet_retinanet(num_classes, backbone='resnet50', inputs=None, modifier=Non
 
     # create the resnet backbone
     if backbone == 'resnet50':
-        resnet = keras_resnet.models.ResNet50(inputs, include_top=False, freeze_bn=True)
+        resnet = resnet50.ResNet50(inputs, include_top=False, freeze_bn=True)
     elif backbone == 'resnet101':
         resnet = keras_resnet.models.ResNet101(inputs, include_top=False, freeze_bn=True)
     elif backbone == 'resnet152':

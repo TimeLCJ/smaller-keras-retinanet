@@ -28,6 +28,7 @@ from keras.utils import multi_gpu_model
 import tensorflow as tf
 
 # Allow relative imports when being executed as script.
+# sys.path.insert(1, "./crnn")定义搜索路径的优先顺序，序号从0开始，表示最大优先级，sys.path.insert()加入的也是临时搜索路径，程序退出后失效。
 if __name__ == "__main__" and __package__ is None:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
     import keras_retinanet.bin  # noqa: F401
@@ -63,7 +64,7 @@ def makedirs(path):
 
 def get_session():
     config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
+    config.gpu_options.allow_growth = True # 按需分配GPU显存
     return tf.Session(config=config)
 
 
@@ -353,7 +354,7 @@ def parse_args(args):
     parser.add_argument('--batch-size',      help='Size of the batches.', default=1, type=int)
     parser.add_argument('--gpu',             help='Id of the GPU to use (as reported by nvidia-smi).')
     parser.add_argument('--multi-gpu',       help='Number of GPUs to use for parallel processing.', type=int, default=0)
-    parser.add_argument('--multi-gpu-force', help='Extra flag needed to enable (experimental) multi-gpu support.', action='store_true')
+    parser.add_argument('--multi-gpu-force', help='Extra flag needed to enable (experimental) multi-gpu support.', action='store_true') # 如果加上了--multi-gpu-force,不需要指定True/False,那么程序running的时候，multi-gpu-force的值为True
     parser.add_argument('--epochs',          help='Number of epochs to train.', type=int, default=50)
     parser.add_argument('--steps',           help='Number of steps per epoch.', type=int, default=10000)
     parser.add_argument('--snapshot-path',   help='Path to store snapshots of models during training (defaults to \'./snapshots\')', default='./snapshots')
@@ -364,6 +365,8 @@ def parse_args(args):
     parser.add_argument('--random-transform', help='Randomly transform image and annotations.', action='store_true')
     parser.add_argument('--image-min-side', help='Rescale the image so the smallest side is min_side.', type=int, default=800)
     parser.add_argument('--image-max-side', help='Rescale the image if the largest side is larger than max_side.', type=int, default=1333)
+
+    parser.add_argument('--custom-backbone-network', help='Used to control whether the pre-training model is loaded.', action='store_true')
 
     return check_args(parser.parse_args(args))
 
@@ -382,7 +385,7 @@ def main(args=None):
 
     # optionally choose specific GPU
     if args.gpu:
-        os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+        os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu # Id of the GPU to use
     keras.backend.tensorflow_backend.set_session(get_session())
 
     # create the generators
@@ -399,6 +402,10 @@ def main(args=None):
         # default to imagenet if nothing else is specified
         if weights is None and args.imagenet_weights:
             weights = backbone.download_imagenet()
+
+        # 自己添加的
+        if args.custom_backbone_network is not None:
+            weights = None
 
         print('Creating model, this may take a second...')
         model, training_model, prediction_model = create_models(
@@ -436,7 +443,8 @@ def main(args=None):
         verbose=1,
         callbacks=callbacks,
     )
-
+    
+    #model.save("resnet50_csv_01.h5")#保存模型和权重----加载时使用load_model("xxxx.h5") 
 
 if __name__ == '__main__':
     main()
