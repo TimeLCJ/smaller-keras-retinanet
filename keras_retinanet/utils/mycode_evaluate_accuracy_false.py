@@ -186,7 +186,7 @@ def evaluate_accuracy_false_rate(
         if np.shape(non_target_recognize_as_target) == (0,): # 防止非目标害虫识别为目标害虫的数量为0，而抛出错误
             false_rate = 0
         else:
-            false_rate = np.max(non_target_recognize_as_target / np.maximum(correctly_identify_target + non_target_recognize_as_target, np.finfo(np.float64).eps))
+            false_rate = non_target_recognize_as_target / np.maximum(correctly_identify_target + non_target_recognize_as_target, np.finfo(np.float64).eps)[-1]
 
         # compute average precision
         accuracy_rates[label] = accuracy_rate
