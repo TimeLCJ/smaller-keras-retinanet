@@ -404,7 +404,7 @@ def main(args=None):
             weights = backbone.download_imagenet()
 
         # 自己添加的
-        if args.custom_backbone_network is not None:
+        if args.custom_backbone_network:
             weights = None
 
         print('Creating model, this may take a second...')
