@@ -95,41 +95,41 @@ class Evaluate(keras.callbacks.Callback):
             f.write('\n')
 
 
-        # 以下是自己加进去的程序，主要求准确率和误检率
-        accuracy_rates, false_rates = evaluate_accuracy_false_rate(
-            self.generator,
-            self.model,
-            iou_threshold=self.iou_threshold,
-            score_threshold=self.score_threshold,
-            max_detections=self.max_detections,
-            save_path=self.save_path
-        )
-
-        mean_accuracy_rate = sum(accuracy_rates.values()) / len(accuracy_rates)
-        mean_false_rate = sum(false_rates.values()) / len(false_rates)
-
-        if self.verbose == 1:
-            for label, accuracy_rate in accuracy_rates.items():
-                print(self.generator.label_to_name(label), '{:.4f}'.format(accuracy_rate))
-            print('mean_accuracy_rate: {:.4f}'.format(mean_accuracy_rate))
-
-            for label, false_rate in false_rates.items():
-                print(self.generator.label_to_name(label), '{:.4f}'.format(false_rate))
-            print('mean_false_rate: {:.4f}'.format(mean_false_rate))
-
-        # 按行保存accuracy_rates字典, false_rates字典，mean_accuracy_rate，mean_false_rate
-        with open('./date_record/accuracy_rates.txt', 'a') as f:
-            f.write(str(accuracy_rates))
-            f.write('\n')
-
-        with open('./date_record/false_rates.txt', 'a') as f:
-            f.write(str(false_rates))
-            f.write('\n')
-
-        with open('./date_record/mean_accuracy_rate.txt', 'a') as f:
-            f.write(str(mean_accuracy_rate))
-            f.write('\n')
-
-        with open('./date_record/mean_false_rate.txt', 'a') as f:
-            f.write(str(mean_false_rate))
-            f.write('\n')
+        # # 以下是自己加进去的程序，主要求准确率和误检率
+        # accuracy_rates, false_rates = evaluate_accuracy_false_rate(
+        #     self.generator,
+        #     self.model,
+        #     iou_threshold=self.iou_threshold,
+        #     score_threshold=self.score_threshold,
+        #     max_detections=self.max_detections,
+        #     save_path=self.save_path
+        # )
+        #
+        # mean_accuracy_rate = sum(accuracy_rates.values()) / len(accuracy_rates)
+        # mean_false_rate = sum(false_rates.values()) / len(false_rates)
+        #
+        # if self.verbose == 1:
+        #     for label, accuracy_rate in accuracy_rates.items():
+        #         print(self.generator.label_to_name(label), '{:.4f}'.format(accuracy_rate))
+        #     print('mean_accuracy_rate: {:.4f}'.format(mean_accuracy_rate))
+        #
+        #     for label, false_rate in false_rates.items():
+        #         print(self.generator.label_to_name(label), '{:.4f}'.format(false_rate))
+        #     print('mean_false_rate: {:.4f}'.format(mean_false_rate))
+        #
+        # # 按行保存accuracy_rates字典, false_rates字典，mean_accuracy_rate，mean_false_rate
+        # with open('./date_record/accuracy_rates.txt', 'a') as f:
+        #     f.write(str(accuracy_rates))
+        #     f.write('\n')
+        #
+        # with open('./date_record/false_rates.txt', 'a') as f:
+        #     f.write(str(false_rates))
+        #     f.write('\n')
+        # 
+        # with open('./date_record/mean_accuracy_rate.txt', 'a') as f:
+        #     f.write(str(mean_accuracy_rate))
+        #     f.write('\n')
+        #
+        # with open('./date_record/mean_false_rate.txt', 'a') as f:
+        #     f.write(str(mean_false_rate))
+        #     f.write('\n')
