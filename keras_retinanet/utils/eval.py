@@ -23,6 +23,8 @@ import numpy as np
 import os
 
 import cv2
+# added by me
+import time
 
 
 def _compute_ap(recall, precision):
@@ -71,13 +73,23 @@ def _get_detections(generator, model, score_threshold=0.05, max_detections=100, 
     """
     all_detections = [[None for i in range(generator.num_classes())] for j in range(generator.size())]
 
+    # 自己加的
+    whole_time = 0
+
     for i in range(generator.size()):
         raw_image    = generator.load_image(i)
         image        = generator.preprocess_image(raw_image.copy())
         image, scale = generator.resize_image(image)
 
+        # 自己加的
+        begin_time = time.time()
         # run network
         boxes, scores, labels = model.predict_on_batch(np.expand_dims(image, axis=0))
+        #自己加的
+        end_time = time.time()
+        predict_time = end_time - begin_time
+        whole_time += predict_time
+        print('一张图预测时间：{:.4f}'.format(predict_time))
 
         # correct boxes for image scale
         boxes /= scale
@@ -108,6 +120,10 @@ def _get_detections(generator, model, score_threshold=0.05, max_detections=100, 
             all_detections[i][label] = image_detections[image_detections[:, -1] == label, :-1]
 
         print('{}/{}'.format(i + 1, generator.size()), end='\r')
+
+    # 自己加的，计算平均推断时间
+    average_time = whole_time / generator.size()
+    print('平均推断时间：{:.4f}'.format(average_time))
 
     return all_detections
 
